@@ -1,0 +1,84 @@
+﻿@page "/login"
+@using KlikajZGlowa.Service.DTO.ApplicationUser
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Logowanie - Klikaj z Głową</PageTitle>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4 text-primary">Logowanie</h3>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger py-2" role="alert">
+                        @errorMessage
+                    </div>
+                }
+
+                <EditForm Model="@model" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator />
+
+                    <div class="mb-3">
+                        <label class="form-label">Adres e-mail</label>
+                        <InputText class="form-control" @bind-Value="model.Email" placeholder="np. jan.kowalski@example.com" />
+                        <ValidationMessage For="@(() => model.Email)" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hasło</label>
+                        <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="••••••••" />
+                        <ValidationMessage For="@(() => model.Password)" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <InputCheckbox class="form-check-input" @bind-Value="model.RememberMe" id="rememberMe" />
+                        <label class="form-check-label text-muted" for="rememberMe">Zapamiętaj mnie</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                            <span>Logowanie...</span>
+                        }
+                        else
+                        {
+                            <span>Zaloguj się</span>
+                        }
+                    </button>
+
+                    <div class="text-center text-muted small">
+                        Nie masz jeszcze konta? <a href="/register" class="text-decoration-none">Zarejestruj się</a>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginApplicationUserDto model = new();
+    private bool isLoading = false;
+    private string? errorMessage;
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        var success = await AuthService.LoginAsync(model);
+        if (success)
+        {
+            Navigation.NavigateTo("/courses");
+        }
+        else
+        {
+            errorMessage = "Nieprawidłowy adres e-mail lub hasło.";
+        }
+
+        isLoading = false;
+    }
+}

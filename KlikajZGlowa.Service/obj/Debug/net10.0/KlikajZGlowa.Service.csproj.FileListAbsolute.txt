@@ -1,0 +1,17 @@
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Service.deps.json
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Service.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Service.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Database.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Model.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Database.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\bin\Debug\net10.0\KlikajZGlowa.Model.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.csproj.AssemblyReference.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.GeneratedMSBuildEditorConfig.editorconfig
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.AssemblyInfoInputs.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.AssemblyInfo.cs
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.csproj.CoreCompileInputs.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZG.E271A798.Up2Date
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\refint\KlikajZGlowa.Service.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\KlikajZGlowa.Service.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Service\obj\Debug\net10.0\ref\KlikajZGlowa.Service.dll

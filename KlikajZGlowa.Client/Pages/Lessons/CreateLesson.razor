@@ -1,0 +1,211 @@
+@page "/courses/{CourseId:int}/lessons/create"
+@attribute [Authorize]
+
+@using KlikajZGlowa.Service.DTO.Lesson
+
+@inject ILessonClientService LessonService
+@inject IAiClientService AiClientService
+@inject NavigationManager Navigation
+
+<PageTitle>Nowa lekcja - Klikaj z Głową</PageTitle>
+
+<div class="row justify-content-center">
+	<div class="col-md-8">
+		<div class="card shadow-sm border-0">
+			<div class="card-body">
+				<h3 class="card-title mb-4">Dodaj lekcję</h3>
+
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h3 class="card-title mb-0">Dodaj lekcję</h3>
+					<button type="button" class="btn btn-outline-primary btn-sm" @onclick="() => showAiModal = true">
+						✨ Wygeneruj treść z AI
+					</button>
+				</div>
+
+				@if (!string.IsNullOrWhiteSpace(errorMessage))
+				{
+					<div class="alert alert-danger">@errorMessage</div>
+				}
+
+				<EditForm Model="@model" OnValidSubmit="CreateLessonAsync">
+					<DataAnnotationsValidator />
+
+					<div class="mb-3">
+						<label class="form-label">Tytuł lekcji</label>
+						<InputText class="form-control"
+								   @bind-Value="model.Title" />
+						<ValidationMessage For="@(() => model.Title)"
+										  x class="text-danger" />
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Treść lekcji</label>
+						<InputTextArea class="form-control"
+									   rows="12"
+									   @bind-Value="model.ContentArea" />
+						<ValidationMessage For="@(() => model.ContentArea)"
+										   class="text-danger" />
+						<div class="form-text">
+							Możesz używać HTML, np. &lt;p&gt;Treść&lt;/p&gt;.
+						</div>
+					</div>
+
+					<div class="d-flex gap-2">
+						<button type="submit"
+								class="btn btn-success"
+								disabled="@isSubmitting">
+							@if (isSubmitting)
+							{
+								<span class="spinner-border spinner-border-sm me-1"></span>
+								<span>Zapisywanie...</span>
+							}
+							else
+							{
+								<span>Dodaj lekcję</span>
+							}
+						</button>
+
+						<a href="@($"/courses/{CourseId}")"
+						   class="btn btn-outline-secondary">
+							Anuluj
+						</a>
+					</div>
+				</EditForm>
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (showAiModal)
+{
+	<div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content border-0 shadow">
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title">✨ Generator lekcji AI</h5>
+					<button type="button" class="btn-close btn-close-white" @onclick="() => showAiModal = false"></button>
+				</div>
+				<div class="modal-body p-4">
+					@if (!string.IsNullOrWhiteSpace(aiError))
+					{
+						<div class="alert alert-danger py-2 small">@aiError</div>
+					}
+
+					<div class="mb-3">
+						<label class="form-label fw-bold">Temat lekcji</label>
+						<input class="form-control" @bind="aiTopic" placeholder="np. Ataki typu Phishing w poczcie firmowej" />
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label fw-bold">Dodatkowe instrukcje (opcjonalnie)</label>
+						<textarea class="form-control" rows="4" @bind="aiInstructions"
+								  placeholder="np. Skup się na analizie nagłówków, wskaźnikach kompromitacji (IoC) i dobrych praktykach."></textarea>
+					</div>
+
+					@if (isGeneratingAi)
+					{
+						<div class="text-center my-3">
+							<div class="spinner-border text-primary" role="status"></div>
+							<div class="small text-muted mt-2">Trwa generowanie lekcji przez model AI...</div>
+						</div>
+					}
+				</div>
+				<div class="modal-footer bg-light">
+					<button type="button" class="btn btn-secondary" @onclick="() => showAiModal = false" disabled="@isGeneratingAi">
+						Anuluj
+					</button>
+					<button type="button" class="btn btn-primary" @onclick="GenerateLessonWithAi" disabled="@isGeneratingAi">
+						@(isGeneratingAi ? "Generowanie..." : "Wstaw do formularza")
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public int CourseId { get; set; }
+
+	private CreateLessonDto model = new();
+	private bool isSubmitting;
+	private string? errorMessage;
+
+	private bool showAiModal;
+	private bool isGeneratingAi;
+	private string aiTopic = string.Empty;
+	private string? aiInstructions;
+	private string? aiError;
+
+	protected override void OnParametersSet()
+	{
+		model.CourseId = CourseId;
+	}
+
+	private async Task GenerateLessonWithAi()
+	{
+		if (string.IsNullOrWhiteSpace(aiTopic))
+		{
+			aiError = "Podaj temat lekcji.";
+			return;
+		}
+
+		isGeneratingAi = true;
+		aiError = null;
+
+		var request = new GenerateLessonRequestDto
+		{
+			CourseId = CourseId,
+			LessonTopic = aiTopic,
+			AdditionalInstructions = aiInstructions
+		};
+
+		var (success, result, message) = await AiClientService.GenerateLessonDraftAsync(request);
+
+		if (success && result != null)
+		{
+			model.Title = result.Title;
+			model.ContentArea = result.ContentArea;
+
+			showAiModal = false;
+		}
+		else
+		{
+			aiError = message ?? "Wystąpił błąd podczas generowania lekcji.";
+		}
+
+		isGeneratingAi = false;
+	}
+
+	private async Task CreateLessonAsync()
+	{
+		isSubmitting = true;
+		errorMessage = null;
+
+		try
+		{
+			var response = await LessonService.CreateAsync(model);
+
+			if (response != null)
+			{
+				Navigation.NavigateTo($"/courses/{CourseId}");
+			}
+			else
+			{
+				errorMessage = "Nie udało się utworzyć lekcji. Upewnij się, że masz uprawnienia do edycji tego kursu.";
+			}
+		}
+		catch (HttpRequestException)
+		{
+			errorMessage = "Wystąpił problem z połączeniem z serwerem.";
+		}
+		catch (Exception)
+		{
+			errorMessage = "Wystąpił nieoczekiwany błąd podczas zapisywania lekcji.";
+		}
+		finally
+		{
+			isSubmitting = false;
+		}
+	}
+}

@@ -1,0 +1,25 @@
+@model KlikajZGlowa.Service.DTO.Author.AuthorDto
+
+@{
+	ViewData["Title"] = "Author Details";
+}
+
+<h1>Author Details</h1>
+
+<div>
+	<h4>Author</h4>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">First Name</dt>
+		<dd class="col-sm-10">@Model.FirstName</dd>
+
+		<dt class="col-sm-2">Last Name</dt>
+		<dd class="col-sm-10">@Model.LastName</dd>
+
+	</dl>
+</div>
+
+<p>
+	<a asp-action="Edit" asp-route-id="@Model.AuthorId" class="btn btn-primary">Edit</a>
+	<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>

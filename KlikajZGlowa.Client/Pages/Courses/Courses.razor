@@ -1,0 +1,109 @@
+﻿@page "/courses"
+
+@using KlikajZGlowa.Service.DTO.Course
+@inject ICourseClientService CourseService
+
+<PageTitle>Katalog Kursów - Klikaj z Głową</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dostępne Kursy</h2>
+    <AuthorizeView Roles="Author, Admin">
+        <Authorized>
+            <a href="/courses/create" class="btn btn-success">+ Stwórz Kurs</a>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        @statusMessage
+        <button type="button" class="btn-close" @onclick="() => statusMessage = null"></button>
+    </div>
+}
+
+@if (isLoading)
+{
+    <div class="d-flex justify-content-center my-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Ładowanie...</span>
+        </div>
+    </div>
+}
+else if (courses.Count == 0)
+{
+    <p class="text-muted">Aktualnie nie ma żadnych opublikowanych kursów.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var course in courses)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary">@course.Title</h5>
+                        <p class="card-text text-secondary flex-grow-1">@course.Description</p>
+                        
+                        <div class="mt-3 pt-3 border-top d-flex gap-2">
+                            <AuthorizeView>
+                                <Authorized>
+                                    @if (!course.IsEnrolled)
+                                    {
+                                        <button class="btn btn-outline-primary btn-sm flex-fill"
+                                                @onclick="() => Enroll(course.CourseId)">
+                                            Zapisz się
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a href="@($"/courses/{course.CourseId}")" class="btn btn-primary btn-sm flex-fill">
+                                            Materiały
+                                        </a>
+                                    }
+                                </Authorized>
+                                <NotAuthorized>
+                                    <a href="/login" class="btn btn-outline-secondary btn-sm w-100">
+                                        Zaloguj się, aby uzyskać dostęp
+                                    </a>
+                                </NotAuthorized>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<CourseDto> courses = new();
+    private bool isLoading = true;
+    private string? statusMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourses();
+    }
+
+    private async Task LoadCourses()
+    {
+        isLoading = true;
+        courses = await CourseService.GetAllAsync();
+        isLoading = false;
+    }
+
+    private async Task Enroll(int courseId)
+    {
+        var success = await CourseService.EnrollAsync(courseId);
+        if (success)
+        {
+            statusMessage = "Pomyślnie zapisano na kurs! Możesz teraz przejść do materiałów.";
+            await LoadCourses();
+        }
+        else
+        {
+            statusMessage = "Nie udało się zapisać na kurs lub jesteś już zapisany.";
+        }
+    }
+}

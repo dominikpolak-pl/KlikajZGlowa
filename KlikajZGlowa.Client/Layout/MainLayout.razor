@@ -1,0 +1,106 @@
+﻿@inherits LayoutComponentBase
+@implements IDisposable
+
+@using KlikajZGlowa.Service.DTO.ApplicationUser
+@using KlikajZGlowa.Client.Interfaces
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Json
+
+@inject IAuthService AuthService
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4 d-flex justify-content-end align-items-center">
+            <AuthorizeView Roles="Admin" Context="adminContext">
+                <a href="/admin/home" class="btn btn-warning btn-sm me-2">Panel Admina</a>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized>
+                    <span class="me-3 text-secondary">Zalogowano jako: <strong>@(currentUser?.FullName ?? "Użytkownik")</strong></span>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="Logout">Wyloguj</button>
+                    <a href="/profile-details" class="btn btn-outline-primary btn-sm me-2">Profil</a>
+                </Authorized>
+                
+                <NotAuthorized>
+                    <a href="/login" class="btn btn-outline-primary btn-sm me-2">Logowanie</a>
+                    <a href="/register" class="btn btn-primary btn-sm">Rejestracja</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private ApplicationUserDto? currentUser;
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+
+        currentUser = null;
+        Navigation.NavigateTo("/login");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthStateProvider.AuthenticationStateChanged +=
+            OnAuthenticationStateChanged;
+
+        var authenticationState =
+            await AuthStateProvider.GetAuthenticationStateAsync();
+
+        await LoadUser(authenticationState);
+    }
+
+    private async void OnAuthenticationStateChanged(
+        Task<AuthenticationState> authenticationStateTask)
+    {
+        var authenticationState = await authenticationStateTask;
+
+        await InvokeAsync(async () =>
+        {
+            await LoadUser(authenticationState);
+            StateHasChanged();
+        });
+    }
+
+    private async Task LoadUser(AuthenticationState authenticationState)
+    {
+        if (authenticationState.User.Identity?.IsAuthenticated != true)
+        {
+            currentUser = null;
+            return;
+        }
+
+        try
+        {
+            currentUser = await Http.GetFromJsonAsync<ApplicationUserDto>(
+                "api/ApplicationUser/me");
+        }
+        catch
+        {
+            currentUser = null;
+        }
+    }
+
+    public void Dispose()
+    {
+        AuthStateProvider.AuthenticationStateChanged -=
+            OnAuthenticationStateChanged;
+    }
+
+}

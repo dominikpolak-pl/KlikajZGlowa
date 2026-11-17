@@ -1,0 +1,134 @@
+﻿@page "/admin/applications"
+@attribute [Authorize(Roles = "Admin")]
+
+@using KlikajZGlowa.Service.DTO.AuthorApplication
+@using KlikajZGlowa.Service.DTO.EnrolledUser
+
+@inject IAuthorApplicationClientService ApplicationService
+@inject IEnrolledUserClientService EnrolledUserService
+
+<PageTitle>Weryfikacja Autorów - Panel Admina</PageTitle>
+
+<div class="container-fluid mt-4">
+    <h2 class="mb-4 text-primary">Oczekujące zgłoszenia na Autora</h2>
+    @if (!string.IsNullOrEmpty(feedbackMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @feedbackMessage
+            <button type="button" class="btn-close" @onclick="() => feedbackMessage = null"></button>
+        </div>
+    }
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center my-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else if (applications.Count == 0)
+    {
+        <div class="alert alert-light border text-muted">
+            Brak oczekujących zgłoszeń do rozpatrzenia.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data</th>
+                            <th>Użytkownik</th>
+                            <th>E-mail</th>
+                            <th>Uzasadnienie</th>
+                            <th class="text-end">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in applications)
+                        {
+                            <tr>
+                                <td>@app.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                <td><strong>@app.FullName</strong></td>
+                                <td>@app.UserEmail</td>
+                                <td>@(string.IsNullOrWhiteSpace(app.Motivation) ? "Brak uzasadnienia" : app.Motivation)</td>
+                                <td class="text-end">
+                                    <button class="btn btn-success btn-sm me-2"
+                                            @onclick="() => HandleApprove(app.Id)"
+                                            disabled="@processingIds.Contains(app.Id)">
+                                        Zatwierdź
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm"
+                                            @onclick="() => HandleReject(app.Id)"
+                                            disabled="@processingIds.Contains(app.Id)">
+                                        Odrzuć
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<AuthorApplicationDto> applications = new();
+    private List<EnrolledUserDto> enrolledUsers = new();
+    private HashSet<int> processingIds = new();
+    private bool isLoading = true;
+    private string? feedbackMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadApplications();
+    }
+
+    private async Task LoadApplications()
+    {
+        isLoading = true;
+
+        applications = await ApplicationService.GetPendingApplicationsAsync();
+
+        isLoading = false;
+    }
+
+    public async Task HandleApprove(int id)
+    {
+        processingIds.Add(id);
+        StateHasChanged();
+        var success = await ApplicationService.ApproveAsync(id);
+
+        if(success)
+        {
+            feedbackMessage = "Wniosek został pomyślnie zaakceptowany. Użytkownik uzyskał profil i rolę Autora."; 
+            await LoadApplications();
+        }
+        else
+        {
+            feedbackMessage = "Wystąpił błąd podczas zatwierdzania wniosku.";
+        }
+        processingIds.Remove(id);
+    }
+
+    public async Task HandleReject(int id)
+    {
+        processingIds.Add(id);
+        StateHasChanged();
+        var success = await ApplicationService.RejectAsync(id, "Zgłoszenie niespełniające kryteriów.");
+
+        if (success)
+        {
+            feedbackMessage = "Wniosek został odrzucony.";
+            await LoadApplications();
+        }
+        else
+        {
+            feedbackMessage = "Wystąpił błąd podczas odrzucania wniosku.";
+        }
+        processingIds.Remove(id);
+    }
+
+}

@@ -1,0 +1,110 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.VerifyReferenceTrimCompatibility = 
+build_property.VerifyReferenceAotCompatibility = 
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = KlikajZGlowa.Client
+build_property.RootNamespace = KlikajZGlowa.Client
+build_property.ProjectDir = C:\Studia\Projekt Inżynierski — kopia (2)\KlikajZGlowa\KlikajZGlowa.Client\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 10.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Studia\Projekt Inżynierski — kopia (2)\KlikajZGlowa\KlikajZGlowa.Client
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Admins/AdminApplicationUserUpdate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5zXEFkbWluQXBwbGljYXRpb25Vc2VyVXBkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Admins/AdminHome.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5zXEFkbWluSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Admins/Applications.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5zXEFwcGxpY2F0aW9ucy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Admins/ApplicationUsers.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5zXEFwcGxpY2F0aW9uVXNlcnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Auth/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxMb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Auth/ProfileDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxQcm9maWxlRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Auth/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxSZWdpc3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Courses/CourseDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xDb3Vyc2VEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Courses/Courses.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xDb3Vyc2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Courses/CreateCourse.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xDcmVhdGVDb3Vyc2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Courses/EditCourse.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xFZGl0Q291cnNlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Lessons/CreateLesson.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVzc29uc1xDcmVhdGVMZXNzb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Lessons/DeleteLesson.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVzc29uc1xEZWxldGVMZXNzb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/Lessons/EditLesson.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVzc29uc1xFZGl0TGVzc29uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Pages/NotFound.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90Rm91bmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-yowaugu2lf
+
+[C:/Studia/Projekt Inżynierski — kopia (2)/KlikajZGlowa/KlikajZGlowa.Client/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-6b5adxjvbc

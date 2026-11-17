@@ -1,0 +1,287 @@
+﻿@page "/courses/{Id:int}"
+@attribute [Authorize]
+
+@using KlikajZGlowa.Service.DTO.Course
+@using KlikajZGlowa.Service.DTO.Author
+@using System.Net.Http.Json
+
+@inject ICourseClientService CourseService
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Materiały Kursu</PageTitle>
+
+@if (isLoading)
+{
+    <div class="d-flex justify-content-center my-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+}
+else if (isForbidden)
+{
+    <div class="alert alert-warning text-center my-4">
+        <h4>Brak dostępu do materiałów</h4>
+        <p>Nie jesteś autorem ani zapisanym uczestnikiem tego kursu.</p>
+        <button class="btn btn-primary" @onclick="EnrollAndRefresh">Zapisz się na kurs</button>
+        <a href="/courses" class="btn btn-outline-secondary ms-2">Wróć do katalogu</a>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="card-title text-primary">@course.Title</h2>
+            <p class="lead">@course.Description</p>
+
+            @if (course.IsAuthor)
+            {
+                <div class="d-flex gap-2">
+                    <a class="btn btn-success"
+                       href="@($"/courses/{course.CourseId}/lessons/create")">
+                        + Dodaj lekcję
+                    </a>
+
+                    <a class="btn btn-outline-primary "
+                       href="@($"/courses/{course.CourseId}/edit")">
+                        + Edytuj kurs
+                    </a>
+
+                    <button class="btn btn-outline-danger text-nowrap"
+                            @onclick="DeleteAsync">
+                        @(isAddingAuthor ? "Usuwanie..." : "Usuń kurs")
+                    </button>
+                </div>
+
+                <div class="mt-4 border-top pt-3">
+                    <h5>Współautorzy kursu</h5>
+
+                    @if (course.Authors != null && course.Authors.Any())
+                    {
+                        <p class="text-muted">
+                            @string.Join(", ", course.Authors.Select(a => $"{a.FirstName} {a.LastName}"))
+                        </p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(authorMessage))
+                    {
+                        <div class="alert @(authorOperationSucceeded ? "alert-success" : "alert-danger") py-2">
+                            @authorMessage
+                        </div>
+                    }
+
+                    <div class="d-flex gap-2 mb-2" style="max-width: 500px;">
+                        <select class="form-select" @bind="selectedAuthorIdAdd">
+                            <option value="">Wybierz autora do dodania</option>
+                            @foreach (var author in availableAuthors)
+                            {
+                                @if (course.Authors == null || !course.Authors.Any(a => a.AuthorId == author.AuthorId))
+                                {
+                                    <option value="@author.AuthorId">
+                                        @author.FirstName @author.LastName
+                                    </option>
+                                }
+                            }
+                        </select>
+
+                        <button class="btn btn-outline-primary text-nowrap"
+                                @onclick="AddAuthorAsync"
+                                disabled="@(!selectedAuthorIdAdd.HasValue || isAddingAuthor)">
+                            @(isAddingAuthor ? "Dodawanie..." : "Dodaj")
+                        </button>
+                    </div>
+
+                    <div class="d-flex gap-2" style="max-width: 500px;">
+                        <select class="form-select" @bind="selectedAuthorIdDelete">
+                            <option value="">Wybierz autora do usunięcia</option>
+                            @if (course.Authors != null)
+                            {
+                                @foreach (var author in course.Authors)
+                                {
+                                    <option value="@author.AuthorId">
+                                        @author.FirstName @author.LastName
+                                    </option>
+                                }
+                            }
+                        </select>
+
+                        <button class="btn btn-outline-danger text-nowrap"
+                                @onclick="RemoveAuthorAsync"
+                                disabled="@(!selectedAuthorIdDelete.HasValue || isDeletingAuthor)">
+                            @(isDeletingAuthor ? "Usuwanie..." : "Usuń")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <h4 class="mb-3">Lekcje w tym kursie</h4>
+
+    @if (course.Lessons == null || !course.Lessons.Any())
+    {
+        <div class="alert alert-light border">Ten kurs nie ma jeszcze dodanych lekcji.</div>
+    }
+    else
+    {
+        var lessonNumber = 0;
+        <div class="accordion" id="lessonsAccordion">
+            @foreach (var lesson in course.Lessons)
+            {
+                lessonNumber++;
+                var collapseId = $"collapse{lesson.LessonId}";
+                var headingId = $"heading{lesson.LessonId}";
+
+                <div class="accordion-item mb-2 border row">
+                    <div class="accordion-header d-flex align-items-center bg-light" id="@headingId">
+                        
+                        <button class="accordion-button collapsed flex-grow-1" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#@collapseId"
+                                aria-expanded="false" aria-controls="@collapseId">
+                            <strong>Moduł @lessonNumber:</strong> &nbsp; @lesson.Title
+                        </button>
+
+                        @if (course.IsAuthor)
+                        {
+                            <div class="pe-3 bg-white h-100 d-flex align-items-center">
+                                <a class="btn btn-sm btn-outline-success text-nowrap"
+                                   href="@($"/courses/{course.CourseId}/lessons/{lesson.LessonId}/edit")">
+                                    ✏️ Edytuj
+                                </a>
+                            </div>
+                            <div class="pe-3 bg-white h-100 d-flex align-items-center">
+                                <a class="btn btn-sm btn-outline-danger text-nowrap"
+                                   href="@($"/courses/{course.CourseId}/lessons/{lesson.LessonId}/delete")">
+                                    X Usuń
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#lessonsAccordion">
+                        <div class="accordion-body">
+                            <div class="lesson-content">
+                                @((MarkupString)lesson.ContentArea)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <a href="/courses" class="btn btn-outline-secondary mt-3">Wróć do listy kursów</a>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private DetailsCourseDto? course;
+    private bool isLoading = true;
+    private bool isForbidden = false;
+    private List<AuthorDto> availableAuthors = new();
+    private int? selectedAuthorIdAdd;
+    private int? selectedAuthorIdDelete;
+    private bool isAddingAuthor;
+    private bool isDeletingAuthor;
+    private bool authorOperationSucceeded;
+    private string? authorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourseDetails();
+    }
+
+    private async Task LoadCourseDetails()
+    {
+        isLoading = true;
+        isForbidden = false;
+
+        course = await CourseService.GetDetailsAsync(Id);
+        if (course == null)
+        {
+            isForbidden = true;
+        }
+        else if (course.IsAuthor)
+        {
+            availableAuthors = await Http.GetFromJsonAsync<List<AuthorDto>>("api/Author")
+                ?? new List<AuthorDto>();
+        }
+
+        isLoading = false;
+    }
+
+    private async Task RemoveAuthorAsync()
+    {
+        if (!selectedAuthorIdDelete.HasValue)
+        {
+            return;
+        }
+
+        isDeletingAuthor = true;
+        authorMessage = null;
+
+        var success = await CourseService.RemoveAuthorAsync(Id, selectedAuthorIdDelete.Value);
+
+        if (success)
+        {
+            authorOperationSucceeded = true;
+            authorMessage = "Współautor został usunięty z kursu.";
+            selectedAuthorIdDelete = null;
+            await LoadCourseDetails();
+        }
+        else
+        {
+            authorOperationSucceeded = false;
+            authorMessage = "Nie udało się usunąć współautora.";
+        }
+
+        isDeletingAuthor = false;
+    }
+
+    private async Task AddAuthorAsync()
+    {
+        if (!selectedAuthorIdAdd.HasValue)
+        {
+            return;
+        }
+
+        isAddingAuthor = true;
+        authorMessage = null;
+
+        var success = await CourseService.AddAuthorAsync(Id, selectedAuthorIdAdd.Value);
+
+        if (success)
+        {
+            authorOperationSucceeded = true;
+            authorMessage = "Współautor został dodany do kursu.";
+            selectedAuthorIdAdd = null;
+            await LoadCourseDetails();
+        }
+        else
+        {
+            authorOperationSucceeded = false;
+            authorMessage = "Nie udało się dodać współautora.";
+        }
+
+        isAddingAuthor = false;
+    }
+
+
+    private async Task EnrollAndRefresh()
+    {
+        var success = await CourseService.EnrollAsync(Id);
+        if (success)
+        {
+            await LoadCourseDetails();
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        var succes = await CourseService.DeleteAsync(Id);
+        if (succes)
+        {
+            Navigation.NavigateTo("/courses");
+        }
+    }
+}

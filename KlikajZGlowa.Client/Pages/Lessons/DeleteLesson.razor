@@ -1,0 +1,126 @@
+﻿@page "/courses/{CourseId:int}/lessons/{LessonId:int}/delete"
+@attribute [Authorize]
+
+@using KlikajZGlowa.Service.DTO.Lesson
+
+@inject ILessonClientService LessonService
+@inject NavigationManager Navigation
+
+<PageTitle>Usuwanie lekcji - Klikaj z Głową</PageTitle>
+
+<div class="row justify-content-center">
+	<div class="col-md-8">
+		<div class="card shadow-sm border-0">
+			<div class="card-body">
+				<h3 class="card-title mb-4">Usuń lekcję</h3>
+
+				@if (isLoading)
+				{
+					<div class="d-flex justify-content-center my-4">
+						<div class="spinner-border text-primary" role="status"></div>
+					</div>
+				}
+				else if (!string.IsNullOrWhiteSpace(errorMessage))
+				{
+					<div class="alert alert-danger">@errorMessage</div>
+					<a href="@($"/courses/{CourseId}")" class="btn btn-outline-secondary">Wróć do kursu</a>
+				}
+				else if (model != null) {
+					<div class="alert alert-warning">
+						<strong>Uwaga!</strong> Czy na pewno chcesz usunąć lekcję <strong>@model.Title</strong>? Tej operacji nie można cofnąć.
+					</div>
+
+					<div class="card bg-light border p-3 mb-4">
+						<h6 class="text-muted mb-2">Podgląd zawartości:</h6>
+						<div class="lesson-content">
+							@((MarkupString)model.ContentArea)
+						</div>
+					</div>
+
+					<div class="d-flex gap-2">
+						<button class="btn btn-danger"
+								@onclick="DeleteLessonAsync"
+								disabled="@isSubmitting">
+							@(isSubmitting ? "Usuwanie..." : "Tak, usuń lekcję")
+						</button>
+
+						<a href="@($"/courses/{CourseId}")"
+						   class="btn btn-outline-secondary @(isSubmitting ? "disabled" : "")">
+							Anuluj
+						</a>
+					</div>
+					
+				}
+
+
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public int CourseId { get; set; }
+
+	[Parameter]
+	public int LessonId { get; set; }
+
+	private LessonDto model = new();
+	private bool isSubmitting;
+	private bool isLoading = true;
+	private string? errorMessage;
+
+
+	protected override Task OnInitializedAsync()
+	{
+		return LoadLessonData();
+	}
+
+	protected async Task LoadLessonData()
+	{
+		isLoading = true;
+		errorMessage = null;
+
+		try
+		{
+			var existingLesson = await LessonService.GetByIdAsync(LessonId);
+			if (existingLesson != null)
+			{
+				model = existingLesson;
+				model.LessonId = LessonId;
+			}
+			else
+			{
+				errorMessage = "Nie odnaleziono lekcji.";
+			}
+		}
+		catch (HttpRequestException)
+		{
+			errorMessage = "Wystąpił błąd podczas ładowania danych lekcji.";
+		}
+		finally
+		{
+			isLoading = false;
+		}
+
+	}
+
+	private async Task DeleteLessonAsync()
+	{
+		isSubmitting = true;
+		errorMessage = null;
+
+		var success = await LessonService.DeleteAsync(LessonId);
+
+		if (success)
+		{
+			Navigation.NavigateTo($"/courses/{CourseId}");
+		}
+		else
+		{
+			errorMessage = "Nie udało się usunąć lekcji (brak uprawnień lub błąd serwera).";
+			isSubmitting = false;
+		}
+	}
+}

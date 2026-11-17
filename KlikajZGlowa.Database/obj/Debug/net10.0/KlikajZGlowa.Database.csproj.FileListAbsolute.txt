@@ -1,0 +1,17 @@
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Database.deps.json
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Database.runtimeconfig.json
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Database.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Database.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Model.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\bin\Debug\net10.0\KlikajZGlowa.Model.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.csproj.AssemblyReference.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.GeneratedMSBuildEditorConfig.editorconfig
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.AssemblyInfoInputs.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.AssemblyInfo.cs
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.csproj.CoreCompileInputs.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZG.C585D6CC.Up2Date
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\refint\KlikajZGlowa.Database.dll
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.pdb
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\KlikajZGlowa.Database.genruntimeconfig.cache
+C:\Studia\Projekt Inżynierski\KlikajZGlowa\KlikajZGlowa.Database\obj\Debug\net10.0\ref\KlikajZGlowa.Database.dll

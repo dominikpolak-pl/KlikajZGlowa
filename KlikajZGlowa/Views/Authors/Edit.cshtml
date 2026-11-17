@@ -1,0 +1,29 @@
+@model KlikajZGlowa.Service.DTO.Author.UpdateAuthorDto
+
+@{
+	ViewData["Title"] = "Edit Author";
+}
+
+<h1>Edit Author</h1>
+
+<form asp-action="Edit" method="post">
+	<input type="hidden" asp-for="AuthorId" />
+	<div class="form-group">
+		<label asp-for="FirstName" class="control-label"></label>
+		<input asp-for="FirstName" class="form-control" />
+		<span asp-validation-for="FirstName" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="LastName" class="control-label"></label>
+		<input asp-for="LastName" class="form-control" />
+		<span asp-validation-for="LastName" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<input type="submit" value="Save" class="btn btn-primary" />
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

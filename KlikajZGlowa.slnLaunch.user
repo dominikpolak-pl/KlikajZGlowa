@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Nowy Profil",
+    "Projects": [
+      {
+        "Path": "KlikajZGlowa.API\\KlikajZGlowa.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "KlikajZGlowa.Client\\KlikajZGlowa.Client.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

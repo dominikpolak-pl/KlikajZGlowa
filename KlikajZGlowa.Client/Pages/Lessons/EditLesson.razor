@@ -1,0 +1,167 @@
+﻿@page "/courses/{CourseId:int}/lessons/{LessonId:int}/edit"
+@attribute [Authorize]
+
+@using KlikajZGlowa.Service.DTO.Lesson
+@using System.Net.Http.Json
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Edycja lekcji - Klikaj z Głową</PageTitle>
+
+<div class="row justify-content-center">
+	<div class="col-md-8">
+		<div class="card shadow-sm border-0">
+			<div class="card-body">
+				<h3 class="card-title mb-4">Edytuj lekcję</h3>
+
+				@if (isLoading)
+				{
+					<div class="d-flex justify-content-center my-4">
+						<div class="spinner-border text-primary" role="status"></div>
+					</div>
+				}
+				else
+				{
+					@if (!string.IsNullOrWhiteSpace(errorMessage))
+					{
+						<div class="alert alert-danger">@errorMessage</div>
+					}
+
+					<EditForm Model="@model" OnValidSubmit="EditLessonAsync">
+						<DataAnnotationsValidator />
+						<ValidationSummary class="text-danger" />
+
+						<div class="mb-3">
+							<label class="form-label">Tytuł lekcji</label>
+							<InputText class="form-control"
+									   @bind-Value="model.Title" />
+							<ValidationMessage For="@(() => model.Title)"
+											   class="text-danger" />
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Treść lekcji</label>
+							<InputTextArea class="form-control"
+										   rows="12"
+										   @bind-Value="model.ContentArea" />
+							<div class="form-text">
+								Możesz używać HTML, np. &lt;p&gt;Treść&lt;/p&gt;.
+							</div>
+						</div>
+
+						<div class="d-flex gap-2">
+							<button type="submit"
+									class="btn btn-success"
+									disabled="@isSubmitting">
+								@if (isSubmitting)
+								{
+									<span class="spinner-border spinner-border-sm me-1"></span>
+									<span>Zapisywanie...</span>
+								}
+								else
+								{
+									<span>Zapisz zmiany</span>
+								}
+							</button>
+
+							<a href="@($"/courses/{CourseId}")"
+							   class="btn btn-outline-secondary">
+								Anuluj
+							</a>
+						</div>
+					</EditForm>
+				}
+
+
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public int CourseId { get; set; }
+
+	[Parameter]
+	public int LessonId { get; set; }
+
+	private UpdateLessonDto model = new();
+	private bool isSubmitting;
+	private bool isLoading = true;
+	private string? errorMessage;
+
+
+	protected override Task OnInitializedAsync()
+	{
+		return LoadLessonData();
+	}
+
+	protected async Task LoadLessonData() {
+		isLoading = true;
+		errorMessage = null;
+
+		try
+		{
+			var existingLesson = await Http.GetFromJsonAsync<UpdateLessonDto>
+				($"api/lesson/{LessonId}");
+			if(existingLesson != null)
+			{
+				model = existingLesson;
+				model.LessonId = LessonId;
+			}
+			else
+			{
+				errorMessage = "Nie odnaleziono lekcji.";
+			}
+		}
+		catch (HttpRequestException)
+		{
+			errorMessage = "Wystąpił błąd podczas ładowania danych lekcji.";
+		}
+		finally
+		{
+			isLoading = false;
+		}
+
+	}
+
+	private async Task EditLessonAsync()
+	{
+		isSubmitting = true;
+		errorMessage = null;
+
+		try
+		{
+			var response = await Http.PutAsJsonAsync(
+				$"api/lesson/{LessonId}",
+				model);
+
+			if (response.IsSuccessStatusCode)
+			{
+				Navigation.NavigateTo($"/courses/{CourseId}");
+			}
+			else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+			{
+				errorMessage = "Nie masz uprawnień do edycji tej lekcji.";
+			}
+			else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+			{
+				errorMessage = "Lekcja nie została znaleziona w bazie.";
+			}
+			else
+			{
+				errorMessage = "Nie udało się zapisać zmian.";
+			}
+		}
+		catch (HttpRequestException)
+		{
+			errorMessage = "Nie udało się połączyć z serwerem.";
+		}
+		finally
+		{
+			isSubmitting = false;
+		}
+	}
+}

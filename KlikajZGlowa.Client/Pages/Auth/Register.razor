@@ -1,0 +1,111 @@
+﻿@page "/register"
+
+@using KlikajZGlowa.Service.DTO.ApplicationUser
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Rejestracja - Klikaj z Głową</PageTitle>
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4 text-primary">Załóż konto</h3>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger py-2" role="alert">
+                        @errorMessage
+                    </div>
+                }
+
+                @if (isRegistered)
+                {
+                    <div class="alert alert-success text-center py-3" role="alert">
+                        <h5>Konto zostało utworzone!</h5>
+                        <p class="mb-2">Możesz się teraz zalogować swoimi danymi.</p>
+                        <a href="/login" class="btn btn-outline-success btn-sm">Przejdź do logowania</a>
+                    </div>
+                }
+                else
+                {
+                    <EditForm Model="@model" OnValidSubmit="HandleRegister">
+                        <DataAnnotationsValidator />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Imię</label>
+                                <InputText class="form-control" @bind-Value="model.FirstName" placeholder="Jan" />
+                                <ValidationMessage For="@(() => model.FirstName)" class="text-danger small" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nazwisko</label>
+                                <InputText class="form-control" @bind-Value="model.LastName" placeholder="Kowalski" />
+                                <ValidationMessage For="@(() => model.LastName)" class="text-danger small" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adres e-mail</label>
+                            <InputText class="form-control" @bind-Value="model.Email" placeholder="jan.kowalski@example.com" />
+                            <ValidationMessage For="@(() => model.Email)" class="text-danger small" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hasło</label>
+                            <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="Minimum 6 znaków" />
+                            <ValidationMessage For="@(() => model.Password)" class="text-danger small" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Potwierdź hasło</label>
+                            <InputText type="password" class="form-control" @bind-Value="model.ConfirmPassword" placeholder="Powtórz hasło" />
+                            <ValidationMessage For="@(() => model.ConfirmPassword)" class="text-danger small" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                <span>Rejestracja...</span>
+                            }
+                            else
+                            {
+                                <span>Zarejestruj się</span>
+                            }
+                        </button>
+
+                        <div class="text-center text-muted small">
+                            Masz już konto? <a href="/login" class="text-decoration-none">Zaloguj się</a>
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private CreateApplicationUserDto model = new();
+    private bool isLoading = false;
+    private bool isRegistered = false;
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        var result = await AuthService.RegisterAsync(model);
+        if (result.Success)
+        {
+            isRegistered = true;
+        }
+        else
+        {
+            errorMessage = result.ErrorMessage;
+        }
+
+        isLoading = false;
+    }
+}

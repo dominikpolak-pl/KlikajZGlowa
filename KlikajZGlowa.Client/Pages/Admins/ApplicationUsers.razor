@@ -1,0 +1,88 @@
+﻿@page "/admin/applicationuser"
+@attribute [Authorize(Roles = "Admin")]
+
+@using KlikajZGlowa.Service.DTO.ApplicationUser
+@using KlikajZGlowa.Client.Interfaces
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Użytkownicy - Panel Admina</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary mb-0">Użytkownicy Platformy</h2>
+        <span class="badge bg-secondary fs-6">Łącznie: @users.Count</span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(feedbackMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @feedbackMessage
+            <button type="button" class="btn-close" @onclick="() => feedbackMessage = null"></button>
+        </div>
+    }
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center my-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else if (users.Count == 0)
+    {
+        <div class="alert alert-light border text-muted">
+            Brak zarejestrowanych użytkowników.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Imię i Nazwisko</th>
+                            <th>E-mail</th>
+                            <th>Telefon</th>
+                            <th class="text-end">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in users)
+                        {
+                            <tr>
+                                <td><strong>@user.FirstName @user.LastName</strong></td>
+                                <td>@user.Email</td>
+                                <td>@(string.IsNullOrWhiteSpace(user.PhoneNumber) ? "—" : user.PhoneNumber)</td>
+                                <td class="text-end">
+                                    <a href="/admin/details/@user.Id" class="btn btn-outline-primary btn-sm">
+                                        Szczegóły / Edycja
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ApplicationUserDto> users = new();
+    private bool isLoading = true;
+    private string? feedbackMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        isLoading = true;
+        users = await AuthService.GetAllAsync();
+        isLoading = false;
+    }
+}

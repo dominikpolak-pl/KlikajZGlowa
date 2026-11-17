@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="KlikajZGlowa.API/KlikajZGlowa.API.csproj" Id="56647bc8-06aa-4d58-92b2-6f1af4abf173" />
+  <Project Path="KlikajZGlowa.Client/KlikajZGlowa.Client.csproj" Id="f903f462-faa9-42ee-aa34-acc123ed776f" />
+  <Project Path="KlikajZGlowa.Database/KlikajZGlowa.Database.csproj" />
+  <Project Path="KlikajZGlowa.Model/KlikajZGlowa.Model.csproj" />
+  <Project Path="KlikajZGlowa.Seeder/KlikajZGlowa.Seeder.csproj" Id="9a36a28c-e862-42c9-bf6e-5a822d367ff8" />
+  <Project Path="KlikajZGlowa.Service/KlikajZGlowa.Service.csproj" Id="78156d71-5989-499d-be08-bea0b9b15fdd" />
+</Solution>

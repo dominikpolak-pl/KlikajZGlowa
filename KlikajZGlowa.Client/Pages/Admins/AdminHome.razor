@@ -1,0 +1,66 @@
+﻿@page "/admin/home"
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Panel Administratora - Klikaj z Głową</PageTitle>
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="text-primary fw-bold">Panel Administratora</h2>
+        <p class="text-muted">Wybierz moduł, którym chcesz zarządzać</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-12 col-md-4">
+            <a href="/admin/applicationuser" class="card shadow-sm border-0 text-decoration-none h-100 hover-card p-3">
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3 text-primary fs-2">
+                        👥
+                    </div>
+                    <h5 class="card-title fw-bold text-dark mb-2">Użytkownicy</h5>
+                    <p class="card-text text-muted small mb-0">
+                        Zarządzanie kontami użytkowników, profilami i edycja danych.
+                    </p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <a href="/admin/applications" class="card shadow-sm border-0 text-decoration-none h-100 hover-card p-3">
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3 mb-3 text-warning fs-2">
+                        📝
+                    </div>
+                    <h5 class="card-title fw-bold text-dark mb-2">Wnioski autorów</h5>
+                    <p class="card-text text-muted small mb-0">
+                        Weryfikacja, akceptacja oraz odrzucanie zgłoszeń na twórcę kursów.
+                    </p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <a href="/courses" class="card shadow-sm border-0 text-decoration-none h-100 hover-card p-3">
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 mb-3 text-success fs-2">
+                        🎓
+                    </div>
+                    <h5 class="card-title fw-bold text-dark mb-2">Katalog kursów</h5>
+                    <p class="card-text text-muted small mb-0">
+                        Przeglądanie bazy kursów, edycja lekcji i moderacja treści.
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+    }
+</style>
